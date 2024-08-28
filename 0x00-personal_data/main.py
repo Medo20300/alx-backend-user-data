@@ -47,7 +47,7 @@ def main():
         print(f"Database error: {e}")
 
     # Password encryption and validation
-    password = "MyAmazingPassw0rd"
+    password = "medhat2030"
     encrypted_password = hash_password(password)
     print("\nPassword Encryption:")
     print(f"Encrypted Password: {encrypted_password}")
