@@ -69,3 +69,4 @@ class SessionDBAuth(SessionExpAuth):
             return False
 
         return True
+
