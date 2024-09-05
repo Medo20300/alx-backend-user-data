@@ -2,97 +2,79 @@
 """
 Module for authentication
 """
-import os
+
+
 from typing import List, TypeVar
-
 from flask import request
+import os
 
 
-class Auth():
-    """Template for all authentication system implemented in this app.
+class Auth:
+    """_summary_
     """
 
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
-        """This function takes a path and a list of excluded paths as arguments
-        and returns a boolean value.
-
-        Returns True if `path` is None.
-        Returns True if `excluded_paths` is None or empty.
-        Returns False if `path` is in `excluded_paths`.
-        You can assume excluded_paths contains string path always ending by
-        a /. This method must be slash tolerant: path=/api/v1/status and
-        path=/api/v1/status/ must be returned False if excluded_paths contains
-        /api/v1/status/.
+        """_summary_
 
         Args:
-            path (str): The path to check against the list of excluded paths.
-            excluded_paths (List[str]): The list of excluded paths.
+            path (str): _description_
+            excluded_paths (List[str]): _description_
 
         Returns:
-            bool: True if the path is not in the excluded paths list,
-            False otherwise.
+                        bool: _description_
         """
-        # If path is None, return True
-        if not path:
+        if path is None:
             return True
-        # If excluded_paths is None or empty, return True
-        if not excluded_paths:
+
+        if excluded_paths is None or excluded_paths == []:
             return True
-        # Remove the trailing slash from the path
-        path = path.rstrip("/")
-        # Check if path is in excluded_paths and return False if path is
-        # in excluded_paths
-        # Loop through excluded paths
+
+        if path in excluded_paths:
+            return False
+
         for excluded_path in excluded_paths:
-            # Check if given path starts with excluded path, with * at the end
-            if excluded_path.endswith("*") and \
-                    path.startswith(excluded_path[:-1]):
-                # Return False if path starts with excluded path with * at end
+            if excluded_path.startswith(path):
                 return False
-            # Check if the given path is equal to the excluded path
-            elif path == excluded_path.rstrip("/"):
-                # Return False if the path is equal to the excluded path
+            elif path.startswith(excluded_path):
                 return False
-        # If path is not in excluded_paths, return True
+            elif excluded_path[-1] == "*":
+                if path.startswith(excluded_path[:-1]):
+                    return False
+
         return True
 
     def authorization_header(self, request=None) -> str:
-        """Gets the value of the Authorization header from the request
+        """_summary_
 
         Args:
-            request (request, optional): Flask request obj. Defaults to None.
+            request (_type_, optional): _description_. Defaults to None.
 
         Returns:
-            str: The value of the Authorization header or None if not present.
+                        str: _description_
         """
-        # If request is None, return None
-        # If request doesn’t contain the header key Authorization, return None
-        if request is not None:
-            return request.headers.get('Authorization', None)
-        return None
+        if request is None:
+            return None
+        # get header from the request
+        header = request.headers.get('Authorization')
+
+        if header is None:
+            return None
+
+        return header
 
     def current_user(self, request=None) -> TypeVar('User'):
-        """This function takes a request object as an optional argument
-        (defaults to None) and returns a value of type 'User'. The purpose
-        and how the request object is used will be determined later.
-        For now, it simply returns None.
+        """_summary_
         """
+
         return None
 
-    def session_cookie(self, request=None) -> str:
-        """Retrieves the session cookie from a request.
+    def session_cookie(self, request=None):
+        """_summary_
 
         Args:
-            request (flask.request, optional): Request to retrieve the session
-            cookie from. Defaults to None.
-
-        Returns:
-            str: The value of the session cookie, None if the request or the
-            cookie is invalid.
+            request (_type_, optional): _description_. Defaults to None.
         """
-        # If request is not None
-        if request is not None:
-            # Get the name of the session cookie from SESSION_NAME env variable
-            cookie_name = os.getenv('SESSION_NAME')
-            # Return the value of the session cookie
-            return request.cookies.get(cookie_name)
+        if request is None:
+            return None
+        session_name = os.getenv('SESSION_NAME')
+        return request.cookies.get(session_name)
