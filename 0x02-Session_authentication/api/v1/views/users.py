@@ -132,4 +132,3 @@ def get_me():
     if user is None:
         abort(401)
     return jsonify(user.to_json()), 200
-
